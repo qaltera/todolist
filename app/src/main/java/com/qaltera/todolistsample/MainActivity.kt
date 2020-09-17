@@ -1,6 +1,5 @@
 package com.qaltera.todolistsample
 
-import android.R.attr
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra(AddNoteActivity.EXTRA_ID, note.id)
                     intent.putExtra(AddNoteActivity.EXTRA_TITLE, note.title)
                     intent.putExtra(AddNoteActivity.EXTRA_DESCRIPTION, note.description)
-                    intent.putExtra(AddNoteActivity.EXTRA_PRIORITY, note.priority)
+                    intent.putExtra(AddNoteActivity.EXTRA_IMPORTANCE, note.importance)
                     startActivityForResult(intent, EDIT_NOTE_REQUEST)
                 }
             }
@@ -71,7 +70,6 @@ class MainActivity : AppCompatActivity() {
                     @Nullable notes: List<Note>
                 ) {
                     adapter.setNotes(notes);
-                    Toast.makeText(this@MainActivity, "onChanged", Toast.LENGTH_SHORT).show()
                 }
             })
     }
@@ -85,11 +83,10 @@ class MainActivity : AppCompatActivity() {
             data != null) {
             val title = data.getStringExtra(AddNoteActivity.EXTRA_TITLE)
             val description = data.getStringExtra(AddNoteActivity.EXTRA_DESCRIPTION)
-            val priority = data.getIntExtra(AddNoteActivity.EXTRA_PRIORITY, 1)
+            val importance = data.getBooleanExtra(AddNoteActivity.EXTRA_IMPORTANCE, false)
             val note =
-                Note(title, description, priority)
+                Note(title, description, importance)
             noteViewModel.insert(note)
-            Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show()
         } else if (requestCode === EDIT_NOTE_REQUEST &&
             resultCode === Activity.RESULT_OK &&
             data != null) {
@@ -101,12 +98,11 @@ class MainActivity : AppCompatActivity() {
             val title: String = data.getStringExtra(AddNoteActivity.EXTRA_TITLE)
             val description: String =
                 data.getStringExtra(AddNoteActivity.EXTRA_DESCRIPTION)
-            val priority: Int = data.getIntExtra(AddNoteActivity.EXTRA_PRIORITY, 1)
+            val importance = data.getBooleanExtra(AddNoteActivity.EXTRA_IMPORTANCE, false)
             val note =
-                Note(title, description, priority)
+                Note(title, description, importance)
             note.id = id
             noteViewModel.update(note)
-            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show()
         }

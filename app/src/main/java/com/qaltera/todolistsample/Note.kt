@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
 class Note(
     val title: String,
     val description: String,
-    val priority: Int
+    val importance: Boolean
 ) {
 
     @PrimaryKey(autoGenerate = true)

@@ -3,6 +3,7 @@ package com.qaltera.todolistsample
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 
 class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
-    private var notes: List<Note> = ArrayList()
+    private val notes: ArrayList<Note> = ArrayList()
     private var listener: OnItemClickListener? = null
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int): NoteHolder {
@@ -28,9 +29,12 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
         holder: NoteHolder, position: Int
     ) {
         val currentNote = notes[position]
-        holder.textViewTitle.text = currentNote.title
-        holder.textViewDescription.text = currentNote.description
-        holder.textViewPriority.text = currentNote.priority.toString()
+        holder.titleTextView.text = currentNote.title
+        holder.descriptionTextView.text = currentNote.description
+
+        holder.importanceImageView.visibility = if(
+            currentNote.importance
+        ) View.VISIBLE else View.GONE
     }
 
     override fun getItemCount(): Int {
@@ -38,7 +42,8 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
     }
 
     fun setNotes(notes: List<Note>) {
-        this.notes = notes
+        this.notes.clear()
+        this.notes.addAll(notes)
         notifyDataSetChanged()
     }
 
@@ -49,10 +54,11 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
     inner class NoteHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
-        val textViewTitle: TextView = itemView.findViewById(R.id.text_view_title)
-        val textViewDescription: TextView = itemView.findViewById(R.id
-            .text_view_description)
-        val textViewPriority: TextView = itemView.findViewById(R.id.text_view_priority)
+        val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
+        val descriptionTextView: TextView = itemView.findViewById(
+            R.id.descriptionTextView
+        )
+        val importanceImageView: ImageView = itemView.findViewById(R.id.importanceImageView)
 
         init {
             itemView.setOnClickListener(View.OnClickListener {

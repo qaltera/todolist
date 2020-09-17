@@ -62,9 +62,9 @@ abstract class NoteDatabase : RoomDatabase() {
             // Not needed if you only populate on creation.
             noteDao.deleteAllNotes()
 
-            noteDao.insert(Note("Title 1", "Description 1", 1))
-            noteDao.insert(Note("Title 2", "Description 2", 2))
-            noteDao.insert(Note("Title 3", "Description 3", 3))
+            noteDao.insert(Note("Title 1", "Description 1", true))
+            noteDao.insert(Note("Title 2", "Description 2", false))
+            noteDao.insert(Note("Title 3", "Description 3", false))
         }
 
         private class NoteDatabaseCallback(
