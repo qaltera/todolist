@@ -32,9 +32,9 @@ class AddNoteActivity : AppCompatActivity() {
 
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
 
-        if (intent?.hasExtra(NOTE_ID_EXTRA_KEY) == true) {
+        val note = intent.getSerializableExtra(NOTE_EXTRA_KEY) as? Note
+        if (note != null) {
             title = "Edit Note"
-            val note = intent.getSerializableExtra(NOTE_EXTRA_KEY) as Note
             titleEditText.setText(note.title)
             descriptionEditText.setText(note.description)
             importanceCheckBox.isChecked = note.importance
@@ -51,12 +51,14 @@ class AddNoteActivity : AppCompatActivity() {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show()
             return
         }
-        val data = Intent()
-        data.putExtra(NOTE_EXTRA_KEY, Note(title, description, checked))
-        val id = intent.getIntExtra(NOTE_ID_EXTRA_KEY, -1)
-        if (id != -1) {
-            data.putExtra(NOTE_ID_EXTRA_KEY, id)
+
+        val result = Note(title, description, checked)
+        val id = (intent.getSerializableExtra(NOTE_EXTRA_KEY) as? Note)?.id
+        if (id != null) {
+            result.id = id
         }
+        val data = Intent()
+        data.putExtra(NOTE_EXTRA_KEY, result)
         setResult(Activity.RESULT_OK, data)
         finish()
     }
@@ -80,6 +82,5 @@ class AddNoteActivity : AppCompatActivity() {
 
     companion object {
         const val NOTE_EXTRA_KEY = "com.qaltera.todolistsample.NOTE_EXTRA_KEY"
-        const val NOTE_ID_EXTRA_KEY = "com.qaltera.todolistsample.NOTE_ID_EXTRA_KEY"
     }
 }

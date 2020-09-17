@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
                 if (note != null) {
                     val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
                     intent.putExtra(AddNoteActivity.NOTE_EXTRA_KEY, note)
-                    intent.putExtra(AddNoteActivity.NOTE_ID_EXTRA_KEY, note.id)
                     startActivityForResult(intent, EDIT_NOTE_REQUEST)
                 }
             }
@@ -84,13 +83,8 @@ class MainActivity : AppCompatActivity() {
         } else if (requestCode === EDIT_NOTE_REQUEST &&
             resultCode === Activity.RESULT_OK &&
             data != null) {
-            val id: Int = data.getIntExtra(AddNoteActivity.NOTE_ID_EXTRA_KEY, -1)
-            if (id == -1) {
-                Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show()
-                return
-            }
+
             val note = data.getSerializableExtra(AddNoteActivity.NOTE_EXTRA_KEY) as Note
-            note.id = id
             noteViewModel.update(note)
         } else {
             Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show()
