@@ -32,14 +32,12 @@ class AddNoteActivity : AppCompatActivity() {
 
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
 
-        if (intent?.hasExtra(EXTRA_ID) == true) {
+        if (intent?.hasExtra(NOTE_ID_EXTRA_KEY) == true) {
             title = "Edit Note"
-            titleEditText.setText(intent.getStringExtra(EXTRA_TITLE))
-            descriptionEditText.setText(intent.getStringExtra(EXTRA_DESCRIPTION))
-            importanceCheckBox.isChecked = intent.getBooleanExtra(
-                EXTRA_IMPORTANCE,
-                false
-            )
+            val note = intent.getSerializableExtra(NOTE_EXTRA_KEY) as Note
+            titleEditText.setText(note.title)
+            descriptionEditText.setText(note.description)
+            importanceCheckBox.isChecked = note.importance
         } else {
             title = "Add Note"
         }
@@ -49,17 +47,15 @@ class AddNoteActivity : AppCompatActivity() {
         val title = titleEditText.text.toString()
         val description = descriptionEditText.text.toString()
         val checked = importanceCheckBox.isChecked
-        if (title.trim { it <= ' ' }.isEmpty() || description.trim { it <= ' ' }.isEmpty()) {
+        if (title.isBlank() || description.isBlank()) {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show()
             return
         }
         val data = Intent()
-        data.putExtra(EXTRA_TITLE, title)
-        data.putExtra(EXTRA_DESCRIPTION, description)
-        data.putExtra(EXTRA_IMPORTANCE, checked)
-        val id = intent.getIntExtra(EXTRA_ID, -1)
+        data.putExtra(NOTE_EXTRA_KEY, Note(title, description, checked))
+        val id = intent.getIntExtra(NOTE_ID_EXTRA_KEY, -1)
         if (id != -1) {
-            data.putExtra(EXTRA_ID, id)
+            data.putExtra(NOTE_ID_EXTRA_KEY, id)
         }
         setResult(Activity.RESULT_OK, data)
         finish()
@@ -83,10 +79,7 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_TITLE = "com.qaltera.todolistsample.EXTRA_TITLE"
-        const val EXTRA_DESCRIPTION =
-            "com.qaltera.todolistsample.EXTRA_DESCRIPTION"
-        const val EXTRA_IMPORTANCE = "com.qaltera.todolistsample.EXTRA_IMPORTANCE"
-        const val EXTRA_ID = "com.qaltera.todolistsample.EXTRA_ID"
+        const val NOTE_EXTRA_KEY = "com.qaltera.todolistsample.NOTE_EXTRA_KEY"
+        const val NOTE_ID_EXTRA_KEY = "com.qaltera.todolistsample.NOTE_ID_EXTRA_KEY"
     }
 }

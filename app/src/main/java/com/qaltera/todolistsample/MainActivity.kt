@@ -54,11 +54,8 @@ class MainActivity : AppCompatActivity() {
             override fun onItemClick(note: Note?) {
                 if (note != null) {
                     val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
-
-                    intent.putExtra(AddNoteActivity.EXTRA_ID, note.id)
-                    intent.putExtra(AddNoteActivity.EXTRA_TITLE, note.title)
-                    intent.putExtra(AddNoteActivity.EXTRA_DESCRIPTION, note.description)
-                    intent.putExtra(AddNoteActivity.EXTRA_IMPORTANCE, note.importance)
+                    intent.putExtra(AddNoteActivity.NOTE_EXTRA_KEY, note)
+                    intent.putExtra(AddNoteActivity.NOTE_ID_EXTRA_KEY, note.id)
                     startActivityForResult(intent, EDIT_NOTE_REQUEST)
                 }
             }
@@ -81,24 +78,18 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == ADD_NOTE_REQUEST &&
             resultCode == Activity.RESULT_OK &&
             data != null) {
-            val title = data.getStringExtra(AddNoteActivity.EXTRA_TITLE)
-            val description = data.getStringExtra(AddNoteActivity.EXTRA_DESCRIPTION)
-            val importance = data.getBooleanExtra(AddNoteActivity.EXTRA_IMPORTANCE, false)
-            val note = Note(title, description, importance)
+            val note =
+                data.getSerializableExtra(AddNoteActivity.NOTE_EXTRA_KEY) as Note
             noteViewModel.insert(note)
         } else if (requestCode === EDIT_NOTE_REQUEST &&
             resultCode === Activity.RESULT_OK &&
             data != null) {
-            val id: Int = data.getIntExtra(AddNoteActivity.EXTRA_ID, -1)
+            val id: Int = data.getIntExtra(AddNoteActivity.NOTE_ID_EXTRA_KEY, -1)
             if (id == -1) {
                 Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show()
                 return
             }
-            val title: String = data.getStringExtra(AddNoteActivity.EXTRA_TITLE)
-            val description: String =
-                data.getStringExtra(AddNoteActivity.EXTRA_DESCRIPTION)
-            val importance = data.getBooleanExtra(AddNoteActivity.EXTRA_IMPORTANCE, false)
-            val note = Note(title, description, importance)
+            val note = data.getSerializableExtra(AddNoteActivity.NOTE_EXTRA_KEY) as Note
             note.id = id
             noteViewModel.update(note)
         } else {
