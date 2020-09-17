@@ -84,8 +84,7 @@ class MainActivity : AppCompatActivity() {
             val title = data.getStringExtra(AddNoteActivity.EXTRA_TITLE)
             val description = data.getStringExtra(AddNoteActivity.EXTRA_DESCRIPTION)
             val importance = data.getBooleanExtra(AddNoteActivity.EXTRA_IMPORTANCE, false)
-            val note =
-                Note(title, description, importance)
+            val note = Note(title, description, importance)
             noteViewModel.insert(note)
         } else if (requestCode === EDIT_NOTE_REQUEST &&
             resultCode === Activity.RESULT_OK &&
@@ -99,8 +98,7 @@ class MainActivity : AppCompatActivity() {
             val description: String =
                 data.getStringExtra(AddNoteActivity.EXTRA_DESCRIPTION)
             val importance = data.getBooleanExtra(AddNoteActivity.EXTRA_IMPORTANCE, false)
-            val note =
-                Note(title, description, importance)
+            val note = Note(title, description, importance)
             note.id = id
             noteViewModel.update(note)
         } else {

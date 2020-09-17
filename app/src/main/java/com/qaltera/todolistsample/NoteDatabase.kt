@@ -30,38 +30,23 @@ abstract class NoteDatabase : RoomDatabase() {
             context: Context,
             scope: CoroutineScope
         ): NoteDatabase {
-            // if the INSTANCE is not null, then return it,
-            // if it is, then create the database
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     NoteDatabase::class.java,
                     "note_database"
                 )
-
-                    // Wipes and rebuilds instead of migrating if no Migration object.
-                    // Migration is not part of this codelab.
+                    // Wipes and rebuilds instead of migrating
                     .fallbackToDestructiveMigration()
                     .addCallback(NoteDatabaseCallback(scope))
                     .build()
 
                 INSTANCE = instance
-                // return instance
                 instance
             }
         }
 
-
-
-        /**
-         * Populate the database in a new coroutine.
-         * If you want to start with more words, just add them.
-         */
         fun populateDatabase(noteDao: NoteDao) {
-            // Start the app with a clean database every time.
-            // Not needed if you only populate on creation.
-            noteDao.deleteAllNotes()
-
             noteDao.insert(Note("Title 1", "Description 1", true))
             noteDao.insert(Note("Title 2", "Description 2", false))
             noteDao.insert(Note("Title 3", "Description 3", false))
@@ -70,14 +55,9 @@ abstract class NoteDatabase : RoomDatabase() {
         private class NoteDatabaseCallback(
             private val scope: CoroutineScope
         ) : RoomDatabase.Callback() {
-            /**
-             * Override the onOpen method to populate the database.
-             * For this sample, we clear the database every time it is created or opened.
-             */
-            override fun onOpen(db: SupportSQLiteDatabase) {
-                super.onOpen(db)
-                // If you want to keep the data through app restarts,
-                // comment out the following line.
+
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
                         populateDatabase(database.noteDao())
