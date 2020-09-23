@@ -4,19 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-/*
- * ************************************************
- * Note
- * Date: 2020-09-16
- * Author: Yulia Rogovaya
- * ************************************************
- */
-
-@Entity(tableName = "note_table")
-class Note(
+@Entity(tableName = "item_table")
+class Item(
     val title: String,
     val description: String,
-    val importance: Boolean
+    val priority: Boolean
 ): Serializable {
 
     @PrimaryKey(autoGenerate = true)

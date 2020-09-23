@@ -9,27 +9,27 @@ import androidx.room.Update
 
 /*
  * ************************************************
- * NoteDao
+ * ItemDao
  * Date: 2020-09-16
  * Author: Yulia Rogovaya
  * ************************************************
  */
 
 @Dao
-interface NoteDao {
+interface ItemDao {
 
     @Insert
-    fun insert(note: Note)
+    fun insert(item: Item)
 
     @Update
-    fun update(note: Note)
+    fun update(item: Item)
 
     @Delete
-    fun delete(note: Note)
+    fun delete(item: Item)
 
-    @Query("DELETE FROM note_table")
-    fun deleteAllNotes()
+    @Query("DELETE FROM item_table")
+    fun deleteAllItems()
 
-    @Query("SELECT * FROM note_table ORDER BY importance DESC")
-    fun allNotes(): LiveData<List<Note>>
+    @Query("SELECT * FROM item_table ORDER BY priority DESC")
+    fun allItems(): LiveData<List<Item>>
 }

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
-    private val noteViewModel: NoteViewModel by viewModels()
+    private val itemViewModel: ItemViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,13 +23,13 @@ class MainActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
-        val adapter = NoteAdapter()
+        val adapter = ItemAdapter()
         recyclerView.adapter = adapter
 
-        val buttonAddNote: FloatingActionButton = findViewById(R.id.button_add_note)
-        buttonAddNote.setOnClickListener {
-                val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
-                startActivityForResult(intent, ADD_NOTE_REQUEST)
+        val buttonAddItem: FloatingActionButton = findViewById(R.id.button_add_item)
+        buttonAddItem.setOnClickListener {
+                val intent = Intent(this@MainActivity, AddItemActivity::class.java)
+                startActivityForResult(intent, ADD_ITEM_REQUEST)
             }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
@@ -44,28 +44,28 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                noteViewModel.delete(adapter.getNoteAt(viewHolder.adapterPosition))
-                Toast.makeText(this@MainActivity, "Note deleted", Toast.LENGTH_SHORT).show()
+                itemViewModel.delete(adapter.getItemAt(viewHolder.adapterPosition))
+                Toast.makeText(this@MainActivity, "Item deleted", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(recyclerView)
 
         adapter.setOnItemClickListener(object :
-            NoteAdapter.OnItemClickListener {
-            override fun onItemClick(note: Note?) {
-                if (note != null) {
-                    val intent = Intent(this@MainActivity, AddNoteActivity::class.java)
-                    intent.putExtra(AddNoteActivity.NOTE_EXTRA_KEY, note)
-                    startActivityForResult(intent, EDIT_NOTE_REQUEST)
+            ItemAdapter.OnItemClickListener {
+            override fun onItemClick(item: Item?) {
+                if (item != null) {
+                    val intent = Intent(this@MainActivity, AddItemActivity::class.java)
+                    intent.putExtra(AddItemActivity.ITEM_EXTRA_KEY, item)
+                    startActivityForResult(intent, EDIT_ITEM_REQUEST)
                 }
             }
         })
 
-        noteViewModel.allNotes.observe(
-            this, object : Observer<List<Note>> {
+        itemViewModel.allItems.observe(
+            this, object : Observer<List<Item>> {
                 override fun onChanged(
-                    @Nullable notes: List<Note>
+                    @Nullable items: List<Item>
                 ) {
-                    adapter.setNotes(notes);
+                    adapter.setItems(items);
                 }
             })
     }
@@ -74,25 +74,25 @@ class MainActivity : AppCompatActivity() {
         requestCode: Int, resultCode: Int, data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ADD_NOTE_REQUEST &&
+        if (requestCode == ADD_ITEM_REQUEST &&
             resultCode == Activity.RESULT_OK &&
             data != null) {
-            val note =
-                data.getSerializableExtra(AddNoteActivity.NOTE_EXTRA_KEY) as Note
-            noteViewModel.insert(note)
-        } else if (requestCode === EDIT_NOTE_REQUEST &&
+            val item =
+                data.getSerializableExtra(AddItemActivity.ITEM_EXTRA_KEY) as Item
+            itemViewModel.insert(item)
+        } else if (requestCode === EDIT_ITEM_REQUEST &&
             resultCode === Activity.RESULT_OK &&
             data != null) {
 
-            val note = data.getSerializableExtra(AddNoteActivity.NOTE_EXTRA_KEY) as Note
-            noteViewModel.update(note)
+            val item = data.getSerializableExtra(AddItemActivity.ITEM_EXTRA_KEY) as Item
+            itemViewModel.update(item)
         } else {
-            Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Item not saved", Toast.LENGTH_SHORT).show()
         }
     }
 
     companion object {
-        const val ADD_NOTE_REQUEST = 1
-        const val EDIT_NOTE_REQUEST = 2
+        const val ADD_ITEM_REQUEST = 1
+        const val EDIT_ITEM_REQUEST = 2
     }
 }

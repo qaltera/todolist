@@ -9,63 +9,63 @@ import androidx.recyclerview.widget.RecyclerView
 
 /*
  * ************************************************
- * NoteAdapter
+ * ItemAdapter
  * Date: 2020-09-16
  * Author: Yulia Rogovaya
  * ************************************************
  */
 
-class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
-    private val notes: ArrayList<Note> = ArrayList()
+class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    private val items: ArrayList<Item> = ArrayList()
     private var listener: OnItemClickListener? = null
     override fun onCreateViewHolder(
-        parent: ViewGroup, viewType: Int): NoteHolder {
+        parent: ViewGroup, viewType: Int): ItemViewHolder {
         val itemView: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.note_item, parent, false)
-        return NoteHolder(itemView)
+            .inflate(R.layout.list_item, parent, false)
+        return ItemViewHolder(itemView)
     }
 
     override fun onBindViewHolder(
-        holder: NoteHolder, position: Int
+        holder: ItemViewHolder, position: Int
     ) {
-        val currentNote = notes[position]
-        holder.titleTextView.text = currentNote.title
-        holder.descriptionTextView.text = currentNote.description
+        val currentItem = items[position]
+        holder.titleTextView.text = currentItem.title
+        holder.descriptionTextView.text = currentItem.description
 
-        holder.importanceImageView.visibility = if(
-            currentNote.importance
+        holder.priorityImageView.visibility = if(
+            currentItem.priority
         ) View.VISIBLE else View.GONE
     }
 
     override fun getItemCount(): Int {
-        return notes.size
+        return items.size
     }
 
-    fun setNotes(notes: List<Note>) {
-        this.notes.clear()
-        this.notes.addAll(notes)
+    fun setItems(items: List<Item>) {
+        this.items.clear()
+        this.items.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun getNoteAt(position: Int): Note {
-        return notes[position]
+    fun getItemAt(position: Int): Item {
+        return items[position]
     }
 
-    inner class NoteHolder(itemView: View) :
+    inner class ItemViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
         val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         val descriptionTextView: TextView = itemView.findViewById(
             R.id.descriptionTextView
         )
-        val importanceImageView: ImageView = itemView.findViewById(R.id.importanceImageView)
+        val priorityImageView: ImageView = itemView.findViewById(R.id.priorityImageView)
 
         init {
             itemView.setOnClickListener(View.OnClickListener {
                 listener?.let { listener ->
                     val position: Int = adapterPosition
                     if (position in 0..itemCount) {
-                        listener.onItemClick(notes[position])
+                        listener.onItemClick(items[position])
                     }
                 }
             })
@@ -77,6 +77,6 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
     }
 
     interface OnItemClickListener {
-        fun onItemClick(note: Note?)
+        fun onItemClick(item: Item?)
     }
 }

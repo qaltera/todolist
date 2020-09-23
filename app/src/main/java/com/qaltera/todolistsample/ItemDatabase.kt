@@ -11,34 +11,34 @@ import kotlinx.coroutines.launch
 
 /*
  * ************************************************
- * NoteDatabase
+ * ItemDatabase
  * Date: 2020-09-16
  * Author: Yulia Rogovaya
  * ************************************************
  */
 
-@Database(entities = [Note::class], version = 1)
-abstract class NoteDatabase : RoomDatabase() {
+@Database(entities = [Item::class], version = 1)
+abstract class ItemDatabase : RoomDatabase() {
 
-    abstract fun noteDao(): NoteDao
+    abstract fun itemDao(): ItemDao
 
     companion object {
         @Volatile
-        private var INSTANCE: NoteDatabase? = null
+        private var INSTANCE: ItemDatabase? = null
 
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
-        ): NoteDatabase {
+        ): ItemDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    NoteDatabase::class.java,
-                    "note_database"
+                    ItemDatabase::class.java,
+                    "item_database"
                 )
                     // Wipes and rebuilds instead of migrating
                     .fallbackToDestructiveMigration()
-                    .addCallback(NoteDatabaseCallback(scope))
+                    .addCallback(ItemDatabaseCallback(scope))
                     .build()
 
                 INSTANCE = instance
@@ -46,13 +46,13 @@ abstract class NoteDatabase : RoomDatabase() {
             }
         }
 
-        fun populateDatabase(noteDao: NoteDao) {
-            noteDao.insert(Note("Title 1", "Description 1", true))
-            noteDao.insert(Note("Title 2", "Description 2", false))
-            noteDao.insert(Note("Title 3", "Description 3", false))
+        fun populateDatabase(itemDao: ItemDao) {
+            itemDao.insert(Item("Title 1", "Description 1", true))
+            itemDao.insert(Item("Title 2", "Description 2", false))
+            itemDao.insert(Item("Title 3", "Description 3", false))
         }
 
-        private class NoteDatabaseCallback(
+        private class ItemDatabaseCallback(
             private val scope: CoroutineScope
         ) : RoomDatabase.Callback() {
 
@@ -60,7 +60,7 @@ abstract class NoteDatabase : RoomDatabase() {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
-                        populateDatabase(database.noteDao())
+                        populateDatabase(database.itemDao())
                     }
                 }
             }
